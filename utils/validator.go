@@ -9,3 +9,11 @@ func IsValidPriority(p string) bool {
 	}
 	return false
 }
+
+func IsValidStatus(status string) bool {
+	switch strings.ToLower(status) {
+	case "new", "progress", "completed":
+		return true
+	}
+	return false
+}
