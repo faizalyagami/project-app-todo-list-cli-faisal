@@ -1,17 +1,12 @@
 [
   {
     "title": "Belajar Golang",
-    "status": "new",
+    "status": "completed",
     "priority": "high"
   },
   {
-    "title": "Belajar PHP",
-    "status": "tes",
-    "priority": "medium"
-  },
-  {
     "title": "belajar javascript",
-    "status": "new",
+    "status": "progress",
     "priority": "medium"
   },
   {

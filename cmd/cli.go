@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"project-app-todo-list-cli/service"
+	"project-app-todo-list-cli/utils"
 )
 
 func RunCLI() {
@@ -99,6 +100,13 @@ func RunCLI() {
 			title, _ := reader.ReadString('\n')
 			fmt.Print("Masukkan prioritas (low/medium/high): ")
 			priority, _ := reader.ReadString('\n')
+			priority = strings.TrimSpace(priority)
+
+			if !utils.IsValidPriority(priority) {
+				fmt.Println("Prioritas tidak valid. Gunakan: low, medium, atau high.")
+				continue
+			}
+
 			err := service.AddTask(strings.TrimSpace(title), strings.TrimSpace(priority))
 			if err != nil {
 				fmt.Println("Gagal menambahkan tugas")
@@ -121,15 +129,22 @@ func RunCLI() {
 			}
 
 			//validasi untuk update status
-			validStatuses := []string{"new", "progress", "completed"}
-			isValid := false
-			for _, v := range validStatuses {
-				if status == v {
-					isValid = true
-					break
+			/*
+				validStatuses := []string{"new", "progress", "completed"}
+				isValid := false
+				for _, v := range validStatuses {
+					if status == v {
+						isValid = true
+						break
+					}
 				}
-			}
-			if !isValid {
+				if !isValid {
+					fmt.Println("Status tidak valid.Gunakan salah satu: new,progress,completed")
+					continue
+				}
+			*/
+			statusClean := strings.TrimSpace(status)
+			if !utils.IsValidStatus(statusClean) {
 				fmt.Println("Status tidak valid.Gunakan salah satu: new,progress,completed")
 				continue
 			}
