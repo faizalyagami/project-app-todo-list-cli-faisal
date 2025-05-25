@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -11,6 +12,73 @@ import (
 )
 
 func RunCLI() {
+	//membuat flag
+	add := flag.String("add", "", "Tambahkan tugas baru, contoh: --add=\"Belajar Pemograman Golang\"")
+	list := flag.Bool("list", false, "Tampilkan semua tugas")
+	done := flag.Int("done", 0, "Tandai tugas sebagai selesai, contoh: --done=2")
+	del := flag.Int("delete", 0, "Hapus Tugas berdasarkan index, contoh: --delete=2")
+	priority := flag.String("priority", "low", "Prioritas tugas: low,medium,high")
+	search := flag.String("search", "", "Cari tugas berdasarkan kata kunci")
+
+	flag.Parse()
+
+	//jika ada flag yg digunakan, jlnkan mode cli
+	if flag.NFlag() > 0 {
+		executed := false
+		if *add != "" {
+			err := service.AddTask(*add, *priority)
+			if err != nil {
+				fmt.Println("Gagal menambahkan:", err)
+			} else {
+				fmt.Println("Tugas berhasil ditambahkan.")
+			}
+			executed = true
+		}
+
+		if *list {
+			err := service.ListTasks()
+			if err != nil {
+				fmt.Println("Gagal menampilkan tugas:", err)
+			}
+			executed = true
+		}
+
+		if *done > 0 {
+			err := service.MarkTaskDone(*done)
+			if err != nil {
+				fmt.Println("Gagal menyelesaikan tugas:", err)
+			} else {
+				fmt.Println("Tugas ditandai sebagai selesai.")
+			}
+			executed = true
+		}
+
+		if *del > 0 {
+			err := service.DeleteTask(*del)
+			if err != nil {
+				fmt.Println("Gagal menghapus tugas:", err)
+			} else {
+				fmt.Println("Tugas berhasil dihapus.")
+			}
+			executed = true
+		}
+
+		if *search != "" {
+			err := service.SearchTask(*search)
+			if err != nil {
+				fmt.Println("Gagal mencari tugas:", err)
+			}
+			executed = true
+		}
+
+		if !executed {
+			fmt.Println("Perintah tidak valid. Gunakan salah satu opsi:")
+			flag.PrintDefaults()
+		}
+
+		return
+	}
+
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
@@ -42,8 +110,9 @@ func RunCLI() {
 		case "3":
 			fmt.Print("Masukkan nomer yang akan diupdate:")
 			idxstr, _ := reader.ReadString('\n')
-			fmt.Println("Masukkan status baru (new/progree/completed): ")
+			fmt.Print("Masukkan status baru (new/progress/completed): ")
 			status, _ := reader.ReadString('\n')
+			status = strings.TrimSpace(status)
 
 			index, err := strconv.Atoi(strings.TrimSpace(idxstr))
 			if err != nil {
@@ -51,7 +120,22 @@ func RunCLI() {
 				continue
 			}
 
-			err = service.UpdateTaskStatus(index, strings.TrimSpace(status))
+			//validasi untuk update status
+			validStatuses := []string{"new", "progress", "completed"}
+			isValid := false
+			for _, v := range validStatuses {
+				if status == v {
+					isValid = true
+					break
+				}
+			}
+			if !isValid {
+				fmt.Println("Status tidak valid.Gunakan salah satu: new,progress,completed")
+				continue
+			}
+
+			//jika valid,lakukan update
+			err = service.UpdateTaskStatus(index, status)
 			if err != nil {
 				fmt.Println("Gagal Update:", err)
 			} else {

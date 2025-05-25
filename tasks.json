@@ -3,5 +3,25 @@
     "title": "Belajar Golang",
     "status": "new",
     "priority": "high"
+  },
+  {
+    "title": "Belajar PHP",
+    "status": "tes",
+    "priority": "medium"
+  },
+  {
+    "title": "belajar javascript",
+    "status": "new",
+    "priority": "medium"
+  },
+  {
+    "title": "Belajar Git",
+    "status": "new",
+    "priority": "medium"
+  },
+  {
+    "title": "Belajar Adobe",
+    "status": "new",
+    "priority": "low"
   }
 ]
